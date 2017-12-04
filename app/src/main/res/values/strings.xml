@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">影视资讯</string>
+    <string name="playing">影讯</string>
+    <string name="movie">电影</string>
+    <string name="tv">电视</string>
+    <string name="category">分类</string>
+    <string name="nowplaying">正在热映</string>
+    <string name="upcoming">即将上映</string>
+    <string name="score">豆瓣评分%.1f</string>
+    <string name="sort">排序</string>
+    <string name="hot">热度</string>
+    <string name="time">时间</string>
+    <string name="evaluation">评价</string>
+    <string name="search">搜索</string>
+    <string name="no_score">暂无评分</string>
+</resources>
