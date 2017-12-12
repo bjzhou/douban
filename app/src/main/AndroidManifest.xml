@@ -19,6 +19,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".search.SearchActivity" />
+        <activity
+            android:name=".detail.DetailActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -7,4 +7,6 @@
     <color name="subText">#888888</color>
     <color name="white">#FFFFFF</color>
     <color name="gray">#999999</color>
+    <color name="textColorHint">#60000000</color>
+    <color name="textColorPrimary">#b2000000</color>
 </resources>

@@ -13,6 +13,7 @@ import cn.bjzhou.douban.GlideApp
 import cn.bjzhou.douban.R
 import cn.bjzhou.douban.R.string.score
 import cn.bjzhou.douban.bean.DoubanItem
+import cn.bjzhou.douban.detail.DetailActivity
 import kotlinx.android.synthetic.main.item_playing.view.*
 
 /**
@@ -26,15 +27,10 @@ class PlayingAdapter : RecyclerView.Adapter<PlayingAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = data.value?.get(position) ?: return
         holder.itemView.setOnClickListener {
-            val intent = CustomTabsIntent.Builder()
-                    .setToolbarColor(ContextCompat.getColor(holder.itemView.context, R.color.colorPrimary))
-                    .build()
-            intent.launchUrl(holder.itemView.context, Uri.parse(item.url))
-//            val intent = Intent(Intent.ACTION_VIEW)
-//            intent.data = Uri.parse("http://www.iqiyi.com/v_19rr8w99fw.html?vfm=m_103_txsp")
-//            intent.data = Uri.parse("http://v.youku.com/v_show/id_XMjk4ODAyMzIyOA==.html")
-//            intent.data = Uri.parse("tenvideo://?action=1&cover_id=iqwvbujgzj5obv1")
-//            holder.itemView.context.startActivity(intent)
+            val intent = Intent(holder.itemView.context, DetailActivity::class.java)
+            intent.putExtra("title", item.name)
+            intent.putExtra("url", item.url)
+            holder.itemView.context.startActivity(intent)
         }
         GlideApp.with(holder.itemView.context)
                 .load(item.img)
