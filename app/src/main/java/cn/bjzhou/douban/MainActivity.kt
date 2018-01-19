@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         }
         container.offscreenPageLimit = 3
 
-        bottomNavigationView.setIconVisibility(false)
         bottomNavigationView.enableAnimation(false)
         bottomNavigationView.enableShiftingMode(false)
         bottomNavigationView.enableItemShiftingMode(false)

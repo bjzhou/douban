@@ -18,9 +18,10 @@
     <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         app:itemTextColor="@color/selector_bottom"
+        app:itemIconTint="@color/selector_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom" />
 

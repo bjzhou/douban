@@ -6,4 +6,4 @@ import com.google.gson.annotations.SerializedName
  * @author zhoubinjia
  * @date 2017/11/6
  */
-class SearchSubject(@SerializedName("subjects", alternate = arrayOf("data")) var subjects: List<DoubanItem>)
+class SearchSubject(@SerializedName("subjects", alternate = ["data"]) var subjects: List<DoubanItem>)
