@@ -12,7 +12,9 @@ import android.view.ViewGroup
 import cn.bjzhou.douban.R
 import cn.bjzhou.douban.api.Api
 import cn.bjzhou.douban.bean.DoubanItem
+import cn.bjzhou.douban.extension.cancel
 import cn.bjzhou.douban.extension.isLoadingMore
+import cn.bjzhou.douban.extension.refresh
 import cn.bjzhou.douban.extension.setOnLoadMore
 import cn.bjzhou.douban.playing.PlayingAdapter
 import cn.bjzhou.douban.search.SearchActivity
@@ -41,7 +43,7 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             else -> "T"
         }
         joinTags()
-        swipeLayout.isRefreshing = true
+        swipeLayout.refresh()
         loadContent()
     }
 
@@ -97,7 +99,7 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         recyclerView.adapter = adapter
 
         adapter.data.observe(this, Observer {
-            swipeLayout.isRefreshing = false
+            swipeLayout.cancel()
             recyclerView.isLoadingMore = false
             adapter.notifyDataSetChanged()
         })
@@ -117,7 +119,7 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun onFragmentVisible() {
         recyclerView.post {
             if (recyclerView.adapter.itemCount == 0) {
-                swipeLayout.isRefreshing = true
+                swipeLayout.refresh()
                 loadContent()
             }
         }
@@ -141,7 +143,7 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
             override fun onFailure() {
                 if (activity == null) return
-                swipeLayout.isRefreshing = false
+                swipeLayout.cancel()
             }
         })
     }

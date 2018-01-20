@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import cn.bjzhou.douban.R
 import cn.bjzhou.douban.bean.DoubanItem
+import cn.bjzhou.douban.extension.cancel
+import cn.bjzhou.douban.extension.refresh
 import cn.bjzhou.douban.spider.PlayingSpider
 import cn.bjzhou.douban.spider.Spider
 import cn.bjzhou.douban.spider.SpiderEngine
@@ -23,7 +25,7 @@ class PlayingContentFragment: BaseFragment() {
 
     private var position = 0
     private val adapter = PlayingAdapter()
-    private val engine = SpiderEngine()
+    private val engine = SpiderEngine.instance
     private lateinit var spider: Spider<List<DoubanItem>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,18 +47,18 @@ class PlayingContentFragment: BaseFragment() {
         recyclerView.adapter = adapter
 
         adapter.data.observe(this, Observer {
-            swipeLayout.isRefreshing = false
+            swipeLayout.cancel()
             adapter.notifyDataSetChanged()
         })
 
         swipeLayout.setOnRefreshListener {
-            crawl()
+            crawl(false)
         }
     }
 
-    private fun crawl() {
-        engine.crawl(spider, {
-            swipeLayout.isRefreshing = false
+    private fun crawl(useCache: Boolean = true) {
+        engine.crawl(spider, useCache = useCache, error = {
+            swipeLayout.cancel()
         }) { items ->
             adapter.data.value = items
         }
@@ -64,10 +66,8 @@ class PlayingContentFragment: BaseFragment() {
 
     override fun onFragmentVisible() {
         swipeLayout.post {
-            if (recyclerView.adapter.itemCount == 0) {
-                swipeLayout.isRefreshing = true
-                crawl()
-            }
+            swipeLayout.refresh()
+            crawl()
         }
     }
 

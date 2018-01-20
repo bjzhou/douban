@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.content_detail.*
 class DetailActivity : AppCompatActivity() {
 
     private var title = ""
-    private val engine = SpiderEngine()
+    private val engine = SpiderEngine.instance
     private var clickIntent: Intent? = null
     private lateinit var spider: DetailSpider
 
@@ -56,7 +56,7 @@ class DetailActivity : AppCompatActivity() {
             }
         }
 
-        engine.crawl(spider) { item ->
+        engine.crawl(spider, expiredTime = expiredTime) { item ->
             GlideApp.with(this)
                     .asBitmap()
                     .load(item.coverUrl)
@@ -111,7 +111,7 @@ class DetailActivity : AppCompatActivity() {
                     })
         }
 
-        engine.crawl(QQSearchSpider(title)) { url ->
+        engine.crawl(QQSearchSpider(title), expiredTime = expiredTime) { url ->
             if (!TextUtils.isEmpty(url)) {
                 playButton.visibility = View.VISIBLE
                 val intent = Intent(Intent.ACTION_VIEW)
@@ -140,5 +140,9 @@ class DetailActivity : AppCompatActivity() {
                 clickIntent = intent
             }
         }
+    }
+
+    companion object {
+        const val expiredTime = 600 * 1000L
     }
 }

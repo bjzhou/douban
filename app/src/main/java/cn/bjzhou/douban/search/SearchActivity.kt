@@ -7,6 +7,8 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.MenuItem
 import cn.bjzhou.douban.R
 import cn.bjzhou.douban.bean.DoubanItem
+import cn.bjzhou.douban.extension.cancel
+import cn.bjzhou.douban.extension.refresh
 import cn.bjzhou.douban.playing.PlayingAdapter
 import cn.bjzhou.douban.spider.SearchSpider
 import cn.bjzhou.douban.spider.Spider
@@ -21,7 +23,7 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var keyword: String
     private lateinit var spider: Spider<List<DoubanItem>>
-    private val engine = SpiderEngine()
+    private val engine = SpiderEngine.instance
     private val adapter = PlayingAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,25 +43,25 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         adapter.data.observe(this, Observer {
-            swipeLayout.isRefreshing = false
+            swipeLayout.cancel()
             adapter.notifyDataSetChanged()
         })
 
         swipeLayout.setOnRefreshListener {
-            crawl()
+            crawl(false)
         }
 
         swipeLayout.post {
             if (recyclerView.adapter.itemCount == 0) {
-                swipeLayout.isRefreshing = true
-                crawl()
+                swipeLayout.refresh()
+                crawl(true)
             }
         }
     }
 
-    private fun crawl() {
-        engine.crawl(spider, {
-            swipeLayout.isRefreshing = false
+    private fun crawl(useCache: Boolean) {
+        engine.crawl(spider, useCache = useCache, error = {
+            swipeLayout.cancel()
         }) { items ->
             adapter.data.value = items
         }
