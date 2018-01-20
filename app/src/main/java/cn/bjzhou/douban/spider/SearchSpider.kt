@@ -8,7 +8,7 @@ import org.jsoup.nodes.Document
  * @date 2017/11/7
  */
 class SearchSpider(keyword: String) : Spider<List<DoubanItem>> {
-    override val name = "search"
+    override val name = "search_$keyword"
     override val url = "https://www.douban.com/search?cat=1002&q=" + keyword
 
     override fun parse(doc: Document): List<DoubanItem> {
