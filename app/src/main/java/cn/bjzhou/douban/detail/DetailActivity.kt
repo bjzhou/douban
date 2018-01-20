@@ -107,6 +107,8 @@ class DetailActivity : AppCompatActivity() {
                             commentAdapter.data.clear()
                             commentAdapter.data.addAll(item.hotComments)
                             commentAdapter.notifyDataSetChanged()
+
+                            contentView.visibility = View.VISIBLE
                         }
                     })
         }

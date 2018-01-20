@@ -5,6 +5,8 @@
     android:layout_height="wrap_content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
     <LinearLayout
+        android:id="@+id/contentView"
+        android:visibility="gone"
         android:orientation="vertical"
         android:layout_margin="16dp"
         android:layout_width="match_parent"

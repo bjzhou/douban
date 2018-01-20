@@ -116,6 +116,11 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        searchView.clearFocus()
+    }
+
     override fun onFragmentVisible() {
         recyclerView.post {
             if (recyclerView.adapter.itemCount == 0) {

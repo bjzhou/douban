@@ -8,7 +8,7 @@ import org.jsoup.nodes.Document
  * @date 2017/12/12
  */
 class QQSearchSpider(val title : String) : Spider<String> {
-    override val name: String = "qq"
+    override val name: String = "qq_$title"
     override val url = "http://v.qq.com/x/search/?q=$title"
 
     override fun parse(doc: Document): String {

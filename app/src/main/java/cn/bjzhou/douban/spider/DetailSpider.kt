@@ -1,5 +1,6 @@
 package cn.bjzhou.douban.spider
 
+import android.util.Base64
 import android.util.Log
 import cn.bjzhou.douban.bean.ItemDetail
 import org.jsoup.nodes.Document
@@ -9,7 +10,7 @@ import org.jsoup.nodes.Document
  * @date 2017/12/6
  */
 class DetailSpider(override val url: String) : Spider<ItemDetail> {
-    override val name = "detail"
+    override val name = "detail_${Base64.encodeToString(url.toByteArray(), Base64.URL_SAFE)}"
 
     override fun parse(doc: Document): ItemDetail {
         val detail = ItemDetail()

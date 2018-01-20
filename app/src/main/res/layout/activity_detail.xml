@@ -93,12 +93,12 @@
                             android:id="@+id/playButton"
                             android:visibility="gone"
                             android:textColor="@color/white"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:layout_marginTop="16dp"
                             android:text="播放"
                             android:gravity="center"
                             android:background="@drawable/btn_round"
-                            android:layout_width="72dp"
+                            android:layout_width="80dp"
                             android:layout_height="36dp" />
                     </LinearLayout>
                 </LinearLayout>
