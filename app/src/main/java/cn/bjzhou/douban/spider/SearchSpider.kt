@@ -24,7 +24,7 @@ class SearchSpider(keyword: String) : Spider<List<DoubanItem>> {
                     }
                     val url = sel.select("a.nbg").attr("href")
                     val img = sel.select("a.nbg>img").attr("src")
-                    DoubanItem(id, name, url, img, score)
+                    DoubanItem(id, name, url, img, false, score)
                 }
     }
 }

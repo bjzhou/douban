@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/filter"
+        android:icon="@drawable/ic_action_filter"
+        android:title="@string/filter"
+        app:showAsAction="always">
+        <menu>
+            <item android:id="@+id/score"
+                android:checkable="true"
+                android:title="@string/score6"
+                app:showAsAction="ifRoom" />
+            <item android:id="@+id/playable"
+                android:checkable="true"
+                android:title="@string/playable"
+                app:showAsAction="ifRoom" />
+        </menu>
+    </item>
+</menu>

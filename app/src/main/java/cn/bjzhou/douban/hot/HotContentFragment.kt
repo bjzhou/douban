@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,22 @@ class HotContentFragment : BaseFragment() {
 
     private var type = "movie"
     private var currentTag = "热门"
+    var onlyPass = false
+        set(value) {
+            field = value
+            if (fragmentVisible) {
+                swipeLayout.isRefreshing = true
+                loadContent()
+            }
+        }
+    var onlyPlayable = false
+        set(value) {
+            field = value
+            if (fragmentVisible) {
+                swipeLayout.isRefreshing = true
+                loadContent()
+            }
+        }
     private var call: Call<List<DoubanItem>>? = null
     private val adapter = PlayingAdapter()
 
@@ -32,6 +49,8 @@ class HotContentFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         type = arguments.getString("type", type)
         currentTag = arguments.getString("tag", currentTag)
+        onlyPass = arguments.getBoolean("pass")
+        onlyPlayable = arguments.getBoolean("playable")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -58,17 +77,26 @@ class HotContentFragment : BaseFragment() {
 
     private fun loadContent(start: Int = 0) {
         call?.cancel()
-        call = Api.service.search(type, start = start, tag = currentTag)
+        call = Api.service.search(type, start = start, tag = currentTag, playable = if (onlyPlayable) {
+            "1"
+        } else {
+            null
+        })
         call?.enqueue(object : KCallback<List<DoubanItem>>() {
             override fun onResponse(res: List<DoubanItem>) {
+                val nr = if (onlyPass) {
+                    res.filter { (it.score ?: 0f) >= 6f }
+                } else {
+                    res
+                }
                 if (start == 0) {
-                    adapter.data.value = res
+                    adapter.data.value = nr
                 } else {
                     adapter.data.value = adapter.data.value?.let {
                         val newData = it as MutableList
-                        newData.addAll(res)
+                        newData.addAll(nr)
                         newData
-                    } ?: res
+                    } ?: nr
                 }
             }
 
@@ -89,7 +117,7 @@ class HotContentFragment : BaseFragment() {
     }
 
     companion object {
-        fun newInstance(type: String, tag: String): HotContentFragment {
+        fun newInstance(type: String, tag: String, pass: Boolean, playable: Boolean): HotContentFragment {
             val fragment = HotContentFragment()
             fragment.logTag = if (type == "movie") {
                 "movie"
@@ -99,6 +127,8 @@ class HotContentFragment : BaseFragment() {
             val bundle = Bundle()
             bundle.putString("type", type)
             bundle.putString("tag", tag)
+            bundle.putBoolean("pass", pass)
+            bundle.putBoolean("playable", playable)
             fragment.arguments = bundle
             return fragment
         }

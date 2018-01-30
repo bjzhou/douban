@@ -21,7 +21,7 @@ class PlayingSpider: Spider<List<DoubanItem>> {
                     val score = sel.attr("data-score").toFloat()
                     val url = poster.select("a").attr("href")
                     val img = poster.select("a>img").attr("src")
-                    DoubanItem(id, name, url, img, score)
+                    DoubanItem(id, name, url, img, false, score)
                 }.filter { (it.score ?: 0f) > 0 }
     }
 }

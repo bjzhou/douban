@@ -10,22 +10,27 @@ import android.util.Log
 open class BaseFragment : Fragment() {
 
     var logTag = javaClass.simpleName
+    var fragmentVisible = false
+        private set
 
     override fun onResume() {
         super.onResume()
         log("onResume", userVisibleHint)
         if (userVisibleHint) {
             onFragmentVisible()
+            fragmentVisible = true
         }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isResumed) {
-            if (isVisibleToUser) {
+            fragmentVisible = if (isVisibleToUser) {
                 onFragmentVisible()
+                true
             } else {
                 onFragmentHidden()
+                false
             }
         }
     }
@@ -33,10 +38,12 @@ open class BaseFragment : Fragment() {
     override fun onHiddenChanged(hidden: Boolean) {
         log("onHiddenChanged", userVisibleHint, isResumed)
         if (isResumed) {
-            if (hidden) {
-                onFragmentVisible()
-            } else {
+            fragmentVisible = if (hidden) {
                 onFragmentHidden()
+                false
+            } else {
+                onFragmentVisible()
+                true
             }
         }
     }

@@ -19,7 +19,7 @@ class UpcomingSpider: Spider<List<DoubanItem>> {
             val id = url.split('/')[4]
             val wish = intro.select("li.dt.last>span").text()
             val img = sel.select("a.thumb>img").attr("src")
-            DoubanItem(id, name, url, img, wish = wish)
+            DoubanItem(id, name, url, img, false, wish = wish)
         }
     }
 }

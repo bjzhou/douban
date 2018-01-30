@@ -10,5 +10,6 @@ class DoubanItem(@SerializedName("id") var id: String,
                  @SerializedName("title") var name: String,
                  @SerializedName("url") var url: String,
                  @SerializedName("cover") var img: String,
+                 var playable: Boolean,
                  @SerializedName("rate") var score: Float? = null,
                  var wish: String? = null)
