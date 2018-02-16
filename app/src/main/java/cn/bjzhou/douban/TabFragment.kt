@@ -1,12 +1,12 @@
 package cn.bjzhou.douban
 
-import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
-import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import cn.bjzhou.douban.hot.HotContentFragment
 import cn.bjzhou.douban.playing.PlayingContentFragment
 import cn.bjzhou.douban.wrapper.BaseFragment

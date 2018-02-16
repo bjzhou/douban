@@ -29,6 +29,9 @@ import retrofit2.Call
  */
 class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
+    private var onlyPlayable = false
+    private var onlyPass = false
+
     override fun onTabReselected(tab: TabLayout.Tab) {
     }
 
@@ -57,7 +60,22 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        toolbar.inflateMenu(R.menu.filter)
+        toolbar.setOnMenuItemClickListener { item ->
+            if (item.isCheckable) {
+                item.isChecked = !item.isChecked
+                if (item.itemId == R.id.score) {
+                    onlyPass = item.isChecked
+                }
+                if (item.itemId == R.id.playable) {
+                    onlyPlayable = item.isChecked
+                }
 
+                swipeLayout.refresh()
+                loadContent()
+            }
+            true
+        }
         searchView.setIconifiedByDefault(false)
         searchView.onActionViewExpanded()
         searchView.isSubmitButtonEnabled = true
@@ -111,6 +129,7 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 recyclerView.isLoadingMore = false
             }
         }
+        swipeLayout.setColorSchemeResources(R.color.colorAccent)
         swipeLayout.setOnRefreshListener {
             loadContent()
         }
@@ -132,7 +151,15 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     private fun loadContent(start: Int = 0) {
         call?.cancel()
-        call = Api.service.newSearch(start = start, tags = tags, sort = sort)
+        call = Api.service.newSearch(start = start, tags = tags, sort = sort, range = if (onlyPass) {
+            "6,10"
+        } else {
+            "0,10"
+        }, playable = if (onlyPlayable) {
+            "1"
+        } else {
+            null
+        })
         call?.enqueue(object : KCallback<List<DoubanItem>>() {
             override fun onResponse(res: List<DoubanItem>) {
                 if (start == 0) {

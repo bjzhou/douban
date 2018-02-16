@@ -51,6 +51,7 @@ class PlayingContentFragment: BaseFragment() {
             adapter.notifyDataSetChanged()
         })
 
+        swipeLayout.setColorSchemeResources(R.color.colorAccent)
         swipeLayout.setOnRefreshListener {
             crawl(false)
         }

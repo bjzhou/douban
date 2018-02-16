@@ -12,6 +12,7 @@ import android.support.v7.graphics.Palette
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Html
 import android.text.TextUtils
+import android.view.MenuItem
 import android.view.View
 import cn.bjzhou.douban.GlideApp
 import cn.bjzhou.douban.R
@@ -135,6 +136,8 @@ class DetailActivity : AppCompatActivity() {
                     playButton.text = "乐视"
                 } else if (split[2].contains("mgtv")) {
                     playButton.text = "芒果TV"
+                } else if (split[2].contains("bilibili")) {
+                    playButton.text = "B站"
                 } else {
                     playButton.text = split[2]
                 }
@@ -142,6 +145,14 @@ class DetailActivity : AppCompatActivity() {
                 clickIntent = intent
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     companion object {

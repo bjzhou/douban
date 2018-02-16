@@ -47,6 +47,7 @@ class SearchActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
         })
 
+        swipeLayout.setColorSchemeResources(R.color.colorAccent)
         swipeLayout.setOnRefreshListener {
             crawl(false)
         }

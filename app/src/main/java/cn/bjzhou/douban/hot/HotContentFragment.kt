@@ -2,20 +2,19 @@ package cn.bjzhou.douban.hot
 
 import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.design.widget.TabLayout
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import cn.bjzhou.douban.R
 import cn.bjzhou.douban.api.Api
 import cn.bjzhou.douban.bean.DoubanItem
+import cn.bjzhou.douban.extension.isLoadingMore
+import cn.bjzhou.douban.extension.setOnLoadMore
 import cn.bjzhou.douban.playing.PlayingAdapter
 import cn.bjzhou.douban.wrapper.BaseFragment
 import cn.bjzhou.douban.wrapper.KCallback
 import kotlinx.android.synthetic.main.layout_playing.*
-import cn.bjzhou.douban.extension.*
 import retrofit2.Call
 
 /**
@@ -66,6 +65,7 @@ class HotContentFragment : BaseFragment() {
             adapter.notifyDataSetChanged()
         })
 
+        swipeLayout.setColorSchemeResources(R.color.colorAccent)
         swipeLayout.setOnRefreshListener {
             loadContent()
         }
