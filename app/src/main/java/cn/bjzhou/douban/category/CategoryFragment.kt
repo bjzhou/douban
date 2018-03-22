@@ -43,7 +43,7 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             0 -> "T"
             1 -> "R"
             2 -> "S"
-            else -> "T"
+            else -> "R"
         }
         joinTags()
         swipeLayout.refresh()
@@ -51,7 +51,7 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     private var tags = ""
-    private var sort = "T"
+    private var sort = "R"
     private val adapter = PlayingAdapter()
     private var call: Call<List<DoubanItem>>? = null
 
@@ -113,6 +113,7 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         typeLayout.addOnTabSelectedListener(this)
         areaLayout.addOnTabSelectedListener(this)
         featureLayout.addOnTabSelectedListener(this)
+        sortLayout.getTabAt(1)?.select()
         recyclerView.layoutManager = GridLayoutManager(context, 3)
         recyclerView.adapter = adapter
 
