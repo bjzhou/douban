@@ -3,6 +3,7 @@ package cn.bjzhou.douban.playing
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import cn.bjzhou.douban.spider.SpiderEngine
 import cn.bjzhou.douban.spider.UpcomingSpider
 import cn.bjzhou.douban.wrapper.BaseFragment
 import kotlinx.android.synthetic.main.layout_playing.*
+import java.util.*
 
 /**
  * @author zhoubinjia
@@ -59,9 +61,10 @@ class PlayingContentFragment: BaseFragment() {
 
     private fun crawl(useCache: Boolean = true) {
         engine.crawl(spider, useCache = useCache, error = {
+
             swipeLayout.cancel()
         }) { items ->
-            adapter.data.value = items
+            adapter.data.value = items.sorted()
         }
     }
 

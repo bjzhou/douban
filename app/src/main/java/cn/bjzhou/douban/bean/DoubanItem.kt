@@ -12,4 +12,19 @@ class DoubanItem(@SerializedName("id") var id: String,
                  @SerializedName("cover") var img: String,
                  var playable: Boolean,
                  @SerializedName("rate") var score: Float? = null,
-                 var wish: String? = null)
+                 var wish: String? = null) : Comparable<DoubanItem> {
+
+    override fun compareTo(other: DoubanItem): Int {
+        if (wish != null && other.wish != null) {
+            var wishInt = 0
+            var oWishInt = 0
+            try {
+                wishInt = Integer.parseInt(wish!!.replace("人想看", ""))
+                oWishInt = Integer.parseInt(other.wish!!.replace("人想看", ""))
+            } catch (e: Exception) {
+            }
+            return - Integer.compare(wishInt, oWishInt)
+        }
+        return 0
+    }
+}
