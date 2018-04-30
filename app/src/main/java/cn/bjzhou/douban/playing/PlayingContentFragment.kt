@@ -30,7 +30,7 @@ class PlayingContentFragment: BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        position = arguments.getInt("position", 0)
+        position = arguments?.getInt("position", 0) ?: 0
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

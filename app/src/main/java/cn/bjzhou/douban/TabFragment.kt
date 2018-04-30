@@ -24,22 +24,22 @@ class TabFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        type = arguments.getString("type", type)
+        type = arguments?.getString("type", type) ?: "playing"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_tab, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (type != "playing") {
             toolbar.inflateMenu(R.menu.filter)
             toolbar.setOnMenuItemClickListener { item ->
                 if (item.isCheckable) {
                     item.isChecked = !item.isChecked
                 }
-                for (i in 0 until viewPager.adapter.count) {
-                    val fragment = viewPager.adapter.instantiateItem(viewPager, i)
+                for (i in 0 until (viewPager.adapter?.count ?: 0)) {
+                    val fragment = viewPager.adapter?.instantiateItem(viewPager, i)
                     if (fragment is HotContentFragment) {
                         if (item.itemId == R.id.score) {
                             pass = item.isChecked

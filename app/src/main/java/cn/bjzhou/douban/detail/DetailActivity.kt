@@ -62,7 +62,7 @@ class DetailActivity : AppCompatActivity() {
                     .asBitmap()
                     .load(item.coverUrl)
                     .into(object : BitmapImageViewTarget(coverView) {
-                        override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             super.onResourceReady(resource, transition)
                             Palette.from(resource).generate { p ->
                                 val color = p.getDarkMutedColor(ContextCompat.getColor(this@DetailActivity, R.color.colorAccent))

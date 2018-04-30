@@ -46,10 +46,10 @@ class HotContentFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        type = arguments.getString("type", type)
-        currentTag = arguments.getString("tag", currentTag)
-        onlyPass = arguments.getBoolean("pass")
-        onlyPlayable = arguments.getBoolean("playable")
+        type = arguments?.getString("type", type) ?: "movie"
+        currentTag = arguments?.getString("tag", currentTag) ?: "热门"
+        onlyPass = arguments?.getBoolean("pass") ?: false
+        onlyPlayable = arguments?.getBoolean("playable") ?: false
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
