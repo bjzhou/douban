@@ -99,7 +99,7 @@ class TabFragment : BaseFragment() {
         private val playingTags = arrayOf("正在热映", "即将上映")
         private val movieTags = arrayOf("热门", "高分", "华语", "欧美", "韩国", "日本", "动作",
                 "喜剧", "爱情", "科幻", "悬疑", "恐怖", "动画")
-        private val tvTags = arrayOf("热门", "美剧", "英剧", "韩剧", "日剧", "国产", "港剧",
+        private val tvTags = arrayOf("热门", "美剧", "英剧", "韩剧", "日剧", "国产剧", "港剧",
                 "日本动画", "综艺")
 
         fun newInstance(type: String): TabFragment {
