@@ -1,10 +1,12 @@
 package cn.bjzhou.douban.search
 
 import android.arch.lifecycle.Observer
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.view.MenuItem
+import android.view.View
 import cn.bjzhou.douban.R
 import cn.bjzhou.douban.bean.DoubanItem
 import cn.bjzhou.douban.extension.cancel
@@ -29,6 +31,9 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
         if (intent == null || intent.extras == null) {
             finish()
             return

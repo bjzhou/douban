@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.ColorUtils
@@ -39,6 +40,9 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
         title = intent?.getStringExtra("title") ?: ""
         spider = DetailSpider(intent?.getStringExtra("url") ?: "")
 
