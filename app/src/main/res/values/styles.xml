@@ -12,6 +12,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.Detail">
+        <item name="colorControlNormal">@color/colorPrimary</item>
+    </style>
+
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="titleTextColor">?android:attr/textColorPrimary</item>
         <item name="android:background">@color/colorPrimary</item>

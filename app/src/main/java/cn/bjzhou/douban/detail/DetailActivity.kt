@@ -1,8 +1,8 @@
 package cn.bjzhou.douban.detail
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Color
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -13,10 +13,11 @@ import android.support.v7.graphics.Palette
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Html
 import android.text.TextUtils
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import cn.bjzhou.douban.GlideApp
 import cn.bjzhou.douban.R
+import cn.bjzhou.douban.extension.actionBarSize
+import cn.bjzhou.douban.extension.dp
 import cn.bjzhou.douban.spider.DetailSpider
 import cn.bjzhou.douban.spider.QQSearchSpider
 import cn.bjzhou.douban.spider.SpiderEngine
@@ -39,13 +40,38 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme_Detail)
         setContentView(R.layout.activity_detail)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        if (Build.VERSION.SDK_INT >= 21) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            appBarLayout.setOnApplyWindowInsetsListener({ _, insets ->
+                toolbar.setPadding(0, insets.systemWindowInsetTop, 0, 0)
+                toolbar.layoutParams.height = actionBarSize + insets.systemWindowInsetTop
+                (topContentLayout.layoutParams as ViewGroup.MarginLayoutParams).topMargin = 48.dp + insets.systemWindowInsetTop
+                appBarLayout.layoutParams.height = 256.dp + insets.systemWindowInsetTop
+                insets.consumeSystemWindowInsets()
+            })
+            appBarLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        }
+        appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
+                val bitmap = Bitmap.createBitmap(toolbar.width, toolbar.height, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bitmap)
+                val matrix = Matrix()
+                val scale = bitmap.width.toFloat() / coverBackgroundView.drawable.intrinsicWidth
+                matrix.setScale(scale, scale)
+                canvas.matrix = matrix
+                coverBackgroundView.drawable.draw(canvas)
+                toolbar.background = BitmapDrawable(resources, bitmap)
+            } else {
+                toolbar.background = null
+            }
         }
         title = intent?.getStringExtra("title") ?: ""
         spider = DetailSpider(intent?.getStringExtra("url") ?: "")
 
+        toolbarLayout.setCollapsedTitleTextColor(Color.WHITE)
+        toolbarLayout.setExpandedTitleColor(Color.TRANSPARENT)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbarLayout.title = title

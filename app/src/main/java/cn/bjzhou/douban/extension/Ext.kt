@@ -1,15 +1,19 @@
 package cn.bjzhou.douban.extension
 
+import android.content.Context
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import cn.bjzhou.douban.App
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
+
+
 
 /**
  * @author zhoubinjia
@@ -17,6 +21,7 @@ import kotlinx.coroutines.experimental.launch
  */
 private var loading = false
 private var refreshJob: Job? = null
+private var mActionSize = 0
 
 var RecyclerView.isLoadingMore: Boolean
     get() = loading
@@ -67,3 +72,18 @@ private fun findLastVisibleItemPosition(layoutManager: RecyclerView.LayoutManage
     }
     return 0
 }
+
+val Int.dp: Int
+    get() {
+        return (App.instance.resources.displayMetrics.density * this + 0.5f).toInt()
+    }
+
+val Context.actionBarSize: Int
+    get() {
+        if (mActionSize == 0) {
+            val actionbarSizeTypedArray = this.obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
+            mActionSize = actionbarSizeTypedArray.getDimensionPixelSize(0, 0)
+            actionbarSizeTypedArray.recycle()
+        }
+        return mActionSize
+    }
