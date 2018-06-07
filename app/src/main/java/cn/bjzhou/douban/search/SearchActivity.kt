@@ -1,6 +1,7 @@
 package cn.bjzhou.douban.search
 
 import android.arch.lifecycle.Observer
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -44,13 +45,14 @@ class SearchActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        recyclerView.layoutManager = GridLayoutManager(this, 3)
+        val count = if (resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            6
+        } else {
+            3
+        }
+        recyclerView.layoutManager = GridLayoutManager(this, count)
+        adapter.setHasStableIds(true)
         recyclerView.adapter = adapter
-
-        adapter.data.observe(this, Observer {
-            swipeLayout.cancel()
-            adapter.notifyDataSetChanged()
-        })
 
         swipeLayout.setColorSchemeResources(R.color.colorAccent)
         swipeLayout.setOnRefreshListener {
@@ -69,7 +71,9 @@ class SearchActivity : AppCompatActivity() {
         engine.crawl(spider, useCache = useCache, error = {
             swipeLayout.cancel()
         }) { items ->
-            adapter.data.value = items
+            adapter.data = items.toMutableList()
+            swipeLayout.cancel()
+            adapter.notifyDataSetChanged()
         }
     }
 

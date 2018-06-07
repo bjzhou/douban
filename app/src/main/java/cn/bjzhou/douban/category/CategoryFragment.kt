@@ -1,14 +1,17 @@
 package cn.bjzhou.douban.category
 
 import android.arch.lifecycle.Observer
-import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.SearchView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import cn.bjzhou.douban.AppConfig
+import cn.bjzhou.douban.AppConfig.onlyPass
+import cn.bjzhou.douban.AppConfig.playable
 import cn.bjzhou.douban.R
 import cn.bjzhou.douban.api.Api
 import cn.bjzhou.douban.bean.DoubanItem
@@ -17,7 +20,6 @@ import cn.bjzhou.douban.extension.isLoadingMore
 import cn.bjzhou.douban.extension.refresh
 import cn.bjzhou.douban.extension.setOnLoadMore
 import cn.bjzhou.douban.playing.PlayingAdapter
-import cn.bjzhou.douban.search.SearchActivity
 import cn.bjzhou.douban.wrapper.BaseFragment
 import cn.bjzhou.douban.wrapper.KCallback
 import kotlinx.android.synthetic.main.fragment_category.*
@@ -28,9 +30,6 @@ import retrofit2.Call
  * @date 2017/11/7
  */
 class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
-
-    private var onlyPlayable = false
-    private var onlyPass = false
 
     override fun onTabReselected(tab: TabLayout.Tab) {
     }
@@ -55,43 +54,16 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val adapter = PlayingAdapter()
     private var call: Call<List<DoubanItem>>? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        adapter.setHasStableIds(true)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_category, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        toolbar.inflateMenu(R.menu.filter)
-        toolbar.setOnMenuItemClickListener { item ->
-            if (item.isCheckable) {
-                item.isChecked = !item.isChecked
-                if (item.itemId == R.id.score) {
-                    onlyPass = item.isChecked
-                }
-                if (item.itemId == R.id.playable) {
-                    onlyPlayable = item.isChecked
-                }
-
-                swipeLayout.refresh()
-                loadContent()
-            }
-            true
-        }
-        searchView.setIconifiedByDefault(false)
-        searchView.onActionViewExpanded()
-        searchView.isSubmitButtonEnabled = true
-        searchView.clearFocus()
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                val intent = Intent(context, SearchActivity::class.java)
-                intent.putExtra("keyword", query)
-                startActivity(intent)
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                return false
-            }
-        })
 
         sorts.forEach {
             sortLayout.addTab(sortLayout.newTab().setText(it))
@@ -114,14 +86,13 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         areaLayout.addOnTabSelectedListener(this)
         featureLayout.addOnTabSelectedListener(this)
         sortLayout.getTabAt(1)?.select()
-        recyclerView.layoutManager = GridLayoutManager(context, 3)
+        val count = if (activity?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            6
+        } else {
+            3
+        }
+        recyclerView.layoutManager = GridLayoutManager(activity, count)
         recyclerView.adapter = adapter
-
-        adapter.data.observe(this, Observer {
-            swipeLayout.cancel()
-            recyclerView.isLoadingMore = false
-            adapter.notifyDataSetChanged()
-        })
 
         recyclerView.setOnLoadMore {
             if (recyclerView.adapter.itemCount % 21 == 0) {
@@ -134,11 +105,15 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         swipeLayout.setOnRefreshListener {
             loadContent()
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        searchView.clearFocus()
+        AppConfig.configObservers.add {
+            if (it == "playable" || it == "onlyPass") {
+                if (fragmentVisible) {
+                    swipeLayout.isRefreshing = true
+                    loadContent()
+                }
+            }
+        }
     }
 
     override fun onFragmentVisible() {
@@ -156,22 +131,38 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             "6,10"
         } else {
             "0,10"
-        }, playable = if (onlyPlayable) {
+        }, playable = if (playable) {
             "1"
         } else {
             null
         })
         call?.enqueue(object : KCallback<List<DoubanItem>>() {
             override fun onResponse(res: List<DoubanItem>) {
-                if (start == 0) {
-                    adapter.data.value = res
-                } else {
-                    adapter.data.value = adapter.data.value?.let {
-                        val newData = it as MutableList
-                        newData.addAll(res)
-                        newData
-                    } ?: res
+                val newData = mutableListOf<DoubanItem>()
+                if (start != 0) {
+                    newData.addAll(adapter.data)
                 }
+                newData.addAll(res)
+                DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                        return adapter.data[oldItemPosition].url == newData[newItemPosition].url
+                    }
+
+                    override fun getOldListSize(): Int {
+                        return adapter.data.size
+                    }
+
+                    override fun getNewListSize(): Int {
+                        return newData.size
+                    }
+
+                    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                        return adapter.data[oldItemPosition] == newData[newItemPosition]
+                    }
+                }).dispatchUpdatesTo(adapter)
+                adapter.data = newData
+                swipeLayout.cancel()
+                recyclerView.isLoadingMore = false
             }
 
             override fun onFailure() {

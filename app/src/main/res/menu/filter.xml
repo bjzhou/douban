@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/filter"
-        android:icon="@drawable/ic_action_filter"
+        android:icon="@drawable/ic_menu_filter"
         android:title="@string/filter"
         app:showAsAction="always">
         <menu>
@@ -17,4 +17,8 @@
                 app:showAsAction="ifRoom" />
         </menu>
     </item>
+    <item android:id="@+id/search"
+        android:title="@string/search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always" />
 </menu>

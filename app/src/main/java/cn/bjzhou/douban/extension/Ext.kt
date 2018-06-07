@@ -5,6 +5,7 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.util.Log
 import cn.bjzhou.douban.App
 import kotlinx.coroutines.experimental.Job
@@ -65,12 +66,12 @@ fun SwipeRefreshLayout.cancel() {
 }
 
 private fun findLastVisibleItemPosition(layoutManager: RecyclerView.LayoutManager): Int {
-    if (layoutManager is LinearLayoutManager) {
-        return layoutManager.findLastVisibleItemPosition()
-    } else if (layoutManager is GridLayoutManager) {
-        return layoutManager.findLastVisibleItemPosition()
+    return when (layoutManager) {
+        is LinearLayoutManager -> layoutManager.findLastVisibleItemPosition()
+        is GridLayoutManager -> layoutManager.findLastVisibleItemPosition()
+        is StaggeredGridLayoutManager -> layoutManager.findLastVisibleItemPositions(null).max() ?: 0
+        else -> 0
     }
-    return 0
 }
 
 val Int.dp: Int

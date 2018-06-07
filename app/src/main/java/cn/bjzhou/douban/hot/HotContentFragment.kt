@@ -1,12 +1,17 @@
 package cn.bjzhou.douban.hot
 
-import android.arch.lifecycle.Observer
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import cn.bjzhou.douban.AppConfig
+import cn.bjzhou.douban.AppConfig.onlyPass
+import cn.bjzhou.douban.AppConfig.playable
 import cn.bjzhou.douban.R
+import cn.bjzhou.douban.R.id.recyclerView
+import cn.bjzhou.douban.R.id.swipeLayout
 import cn.bjzhou.douban.api.Api
 import cn.bjzhou.douban.bean.DoubanItem
 import cn.bjzhou.douban.extension.isLoadingMore
@@ -25,31 +30,15 @@ class HotContentFragment : BaseFragment() {
 
     private var type = "movie"
     private var currentTag = "热门"
-    var onlyPass = false
-        set(value) {
-            field = value
-            if (fragmentVisible) {
-                swipeLayout.isRefreshing = true
-                loadContent()
-            }
-        }
-    var onlyPlayable = false
-        set(value) {
-            field = value
-            if (fragmentVisible) {
-                swipeLayout.isRefreshing = true
-                loadContent()
-            }
-        }
     private var call: Call<List<DoubanItem>>? = null
     private val adapter = PlayingAdapter()
+    private var oldSize = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         type = arguments?.getString("type", type) ?: "movie"
         currentTag = arguments?.getString("tag", currentTag) ?: "热门"
-        onlyPass = arguments?.getBoolean("pass") ?: false
-        onlyPlayable = arguments?.getBoolean("playable") ?: false
+        adapter.setHasStableIds(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -57,14 +46,13 @@ class HotContentFragment : BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recyclerView.layoutManager = GridLayoutManager(context, 3)
+        val count = if (activity?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            6
+        } else {
+            3
+        }
+        recyclerView.layoutManager = GridLayoutManager(activity, count)
         recyclerView.adapter = adapter
-        adapter.data.observe(this, Observer {
-            swipeLayout.isRefreshing = false
-            recyclerView.isLoadingMore = false
-            adapter.notifyDataSetChanged()
-        })
-
         swipeLayout.setColorSchemeResources(R.color.colorAccent)
         swipeLayout.setOnRefreshListener {
             loadContent()
@@ -73,11 +61,20 @@ class HotContentFragment : BaseFragment() {
         recyclerView.setOnLoadMore {
             loadContent(recyclerView.adapter.itemCount)
         }
+
+        AppConfig.configObservers.add {
+            if (it == "playable" || it == "onlyPass") {
+                if (fragmentVisible) {
+                    swipeLayout.isRefreshing = true
+                    loadContent()
+                }
+            }
+        }
     }
 
     private fun loadContent(start: Int = 0) {
         call?.cancel()
-        call = Api.service.search(type, start = start, tag = currentTag, playable = if (onlyPlayable) {
+        call = Api.service.search(type, start = start, tag = currentTag, playable = if (playable) {
             "1"
         } else {
             null
@@ -89,15 +86,16 @@ class HotContentFragment : BaseFragment() {
                 } else {
                     res
                 }
-                if (start == 0) {
-                    adapter.data.value = nr
-                } else {
-                    adapter.data.value = adapter.data.value?.let {
-                        val newData = it as MutableList
-                        newData.addAll(nr)
-                        newData
-                    } ?: nr
+                val newData = mutableListOf<DoubanItem>()
+                if (start != 0) {
+                    newData.addAll(adapter.data)
                 }
+                newData.addAll(nr)
+                oldSize= adapter.data.size
+                adapter.data = newData.distinct()
+                adapter.notifyDataSetChanged()
+                swipeLayout.isRefreshing = false
+                recyclerView.isLoadingMore = false
             }
 
             override fun onFailure() {
@@ -117,7 +115,7 @@ class HotContentFragment : BaseFragment() {
     }
 
     companion object {
-        fun newInstance(type: String, tag: String, pass: Boolean, playable: Boolean): HotContentFragment {
+        fun newInstance(type: String, tag: String): HotContentFragment {
             val fragment = HotContentFragment()
             fragment.logTag = if (type == "movie") {
                 "movie"
@@ -127,8 +125,6 @@ class HotContentFragment : BaseFragment() {
             val bundle = Bundle()
             bundle.putString("type", type)
             bundle.putString("tag", tag)
-            bundle.putBoolean("pass", pass)
-            bundle.putBoolean("playable", playable)
             fragment.arguments = bundle
             return fragment
         }

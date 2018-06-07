@@ -149,27 +149,14 @@ class DetailActivity : AppCompatActivity() {
                 playButton.visibility = View.VISIBLE
                 val intent = Intent(Intent.ACTION_VIEW)
                 val split = url.split("/")
-                if (split[2].contains("v.qq.com")) {
-                    playButton.text = "腾讯视频"
-                    val coverId = split[5]
-                    intent.data = Uri.parse("tenvideo2://?action=1&cover_id=$coverId")
-                    val component = intent.resolveActivity(packageManager)
-                    if (component != null) {
-                        clickIntent = intent
-                        return@crawl
-                    }
-                } else if (split[2].contains("youku")) {
-                    playButton.text = "优酷"
-                } else if (split[2].contains("iqiyi")) {
-                    playButton.text = "爱奇艺"
-                } else if (split[2].contains("letv")) {
-                    playButton.text = "乐视"
-                } else if (split[2].contains("mgtv")) {
-                    playButton.text = "芒果TV"
-                } else if (split[2].contains("bilibili")) {
-                    playButton.text = "B站"
-                } else {
-                    playButton.text = split[2]
+                when {
+                    split[2].contains("v.qq.com") -> playButton.text = "腾讯视频"
+                    split[2].contains("youku") -> playButton.text = "优酷"
+                    split[2].contains("iqiyi") -> playButton.text = "爱奇艺"
+                    split[2].contains("letv") -> playButton.text = "乐视"
+                    split[2].contains("mgtv") -> playButton.text = "芒果TV"
+                    split[2].contains("bilibili") -> playButton.text = "B站"
+                    else -> playButton.text = split[2]
                 }
                 intent.data = Uri.parse(url)
                 clickIntent = intent

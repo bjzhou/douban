@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * @author zhoubinjia
  * @date 2017/11/3
  */
-class DoubanItem(@SerializedName("id") var id: String,
+data class DoubanItem(@SerializedName("id") var id: String,
                  @SerializedName("title") var name: String,
                  @SerializedName("url") var url: String,
                  @SerializedName("cover") var img: String,
@@ -26,5 +26,14 @@ class DoubanItem(@SerializedName("id") var id: String,
             return - Integer.compare(wishInt, oWishInt)
         }
         return 0
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is DoubanItem) return false
+        return id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
     }
 }

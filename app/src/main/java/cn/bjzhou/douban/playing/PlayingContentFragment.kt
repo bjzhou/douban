@@ -1,9 +1,9 @@
 package cn.bjzhou.douban.playing
 
 import android.arch.lifecycle.Observer
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +17,6 @@ import cn.bjzhou.douban.spider.SpiderEngine
 import cn.bjzhou.douban.spider.UpcomingSpider
 import cn.bjzhou.douban.wrapper.BaseFragment
 import kotlinx.android.synthetic.main.layout_playing.*
-import java.util.*
 
 /**
  * @author zhoubinjia
@@ -33,6 +32,7 @@ class PlayingContentFragment: BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         position = arguments?.getInt("position", 0) ?: 0
+        adapter.setHasStableIds(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -45,13 +45,13 @@ class PlayingContentFragment: BaseFragment() {
         } else {
             UpcomingSpider()
         }
-        recyclerView.layoutManager = GridLayoutManager(context, 3)
+        val count = if (activity?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            6
+        } else {
+            3
+        }
+        recyclerView.layoutManager = GridLayoutManager(activity, count)
         recyclerView.adapter = adapter
-
-        adapter.data.observe(this, Observer {
-            swipeLayout.cancel()
-            adapter.notifyDataSetChanged()
-        })
 
         swipeLayout.setColorSchemeResources(R.color.colorAccent)
         swipeLayout.setOnRefreshListener {
@@ -64,7 +64,9 @@ class PlayingContentFragment: BaseFragment() {
 
             swipeLayout.cancel()
         }) { items ->
-            adapter.data.value = items.sorted()
+            adapter.data = items.sorted().toMutableList()
+            swipeLayout.cancel()
+            adapter.notifyDataSetChanged()
         }
     }
 

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import cn.bjzhou.douban.extension.setTVSupport
 import cn.bjzhou.douban.hot.HotContentFragment
 import cn.bjzhou.douban.playing.PlayingContentFragment
 import cn.bjzhou.douban.wrapper.BaseFragment
@@ -19,8 +20,6 @@ import kotlinx.android.synthetic.main.fragment_tab.*
 class TabFragment : BaseFragment() {
 
     private var type = "playing"
-    private var pass = false
-    private var playable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,28 +31,6 @@ class TabFragment : BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (type != "playing") {
-            toolbar.inflateMenu(R.menu.filter)
-            toolbar.setOnMenuItemClickListener { item ->
-                if (item.isCheckable) {
-                    item.isChecked = !item.isChecked
-                }
-                for (i in 0 until (viewPager.adapter?.count ?: 0)) {
-                    val fragment = viewPager.adapter?.instantiateItem(viewPager, i)
-                    if (fragment is HotContentFragment) {
-                        if (item.itemId == R.id.score) {
-                            pass = item.isChecked
-                            fragment.onlyPass = item.isChecked
-                        }
-                        if (item.itemId == R.id.playable) {
-                            playable = item.isChecked
-                            fragment.onlyPlayable = item.isChecked
-                        }
-                    }
-                }
-                true
-            }
-        }
     }
 
     override fun onFragmentVisible() {
@@ -62,8 +39,8 @@ class TabFragment : BaseFragment() {
             override fun getItem(position: Int): Fragment? {
                 return when (type) {
                     "playing" -> PlayingContentFragment.newInstance(position)
-                    "movie" -> HotContentFragment.newInstance(type, movieTags[position], pass, playable)
-                    "tv" -> HotContentFragment.newInstance(type, tvTags[position], pass, playable)
+                    "movie" -> HotContentFragment.newInstance(type, movieTags[position])
+                    "tv" -> HotContentFragment.newInstance(type, tvTags[position])
                     else -> null
                 }
             }
@@ -92,6 +69,7 @@ class TabFragment : BaseFragment() {
             TabLayout.MODE_SCROLLABLE
         }
         tabLayout.setupWithViewPager(viewPager)
+//        tabLayout.setTVSupport()
     }
 
     companion object {
