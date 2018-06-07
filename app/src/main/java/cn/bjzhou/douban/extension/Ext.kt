@@ -88,3 +88,6 @@ val Context.actionBarSize: Int
         }
         return mActionSize
     }
+
+val String?.isEmpty
+    get() = this == null || this.isEmpty()

@@ -1,6 +1,7 @@
 package cn.bjzhou.douban.api
 
 import cn.bjzhou.douban.bean.DoubanItem
+import cn.bjzhou.douban.bean.YYeTsItem
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -25,4 +26,7 @@ interface DoubanService {
                   @Query("start") start: Int = 0,
                   @Query("playable") playable: String? = null,
                   @Query("limit") limit: Int = 21) : Call<List<DoubanItem>>
+
+    @GET("search")
+    fun yyetsSearch(@Query("keyword") keyword: String) : Call<YYeTsItem>
 }

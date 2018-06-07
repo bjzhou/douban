@@ -1,6 +1,7 @@
 package cn.bjzhou.douban.api
 
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * @author zhoubinjia
@@ -14,5 +15,10 @@ object Api {
             .build()
 
     val service = retrofit.create(DoubanService::class.java)
+
+    val yyetsService = Retrofit.Builder()
+            .baseUrl("http://m.zimuzu.tv/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(DoubanService::class.java)
 
 }

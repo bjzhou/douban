@@ -16,16 +16,21 @@ import android.text.TextUtils
 import android.view.*
 import cn.bjzhou.douban.GlideApp
 import cn.bjzhou.douban.R
+import cn.bjzhou.douban.api.Api
+import cn.bjzhou.douban.bean.YYeTsItem
 import cn.bjzhou.douban.extension.actionBarSize
 import cn.bjzhou.douban.extension.dp
+import cn.bjzhou.douban.extension.isEmpty
 import cn.bjzhou.douban.spider.DetailSpider
 import cn.bjzhou.douban.spider.QQSearchSpider
 import cn.bjzhou.douban.spider.SpiderEngine
+import cn.bjzhou.douban.wrapper.KCallback
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.bumptech.glide.request.transition.Transition
 import jp.wasabeef.blurry.Blurry
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.content_detail.*
+import org.jsoup.Jsoup
 
 /**
  * @author zhoubinjia
@@ -36,6 +41,7 @@ class DetailActivity : AppCompatActivity() {
     private var title = ""
     private val engine = SpiderEngine.instance
     private var clickIntent: Intent? = null
+    private var yyetsIntent: Intent? = null
     private lateinit var spider: DetailSpider
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,6 +89,11 @@ class DetailActivity : AppCompatActivity() {
         hotCommentsView.adapter = HotCommetsAdapter()
         playButton.setOnClickListener {
             clickIntent?.let {
+                startActivity(it)
+            }
+        }
+        yyetsButton.setOnClickListener {
+            yyetsIntent?.let {
                 startActivity(it)
             }
         }
@@ -162,6 +173,19 @@ class DetailActivity : AppCompatActivity() {
                 clickIntent = intent
             }
         }
+
+        Api.yyetsService.yyetsSearch(title.split(" ")[0]).enqueue(object : KCallback<YYeTsItem>() {
+            override fun onResponse(res: YYeTsItem) {
+                val html = res.data.resource_html
+                if (html.isEmpty) return
+                yyetsButton.visibility = View.VISIBLE
+                val intent = Intent(Intent.ACTION_VIEW)
+                val doc = Jsoup.parse(html)
+                val url = "http://m.zimuzu.tv" + doc.select("a")[0].attr("href")
+                intent.data = Uri.parse(url)
+                yyetsIntent = intent
+            }
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
