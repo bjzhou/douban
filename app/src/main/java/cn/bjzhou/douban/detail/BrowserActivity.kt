@@ -80,14 +80,6 @@ class BrowserActivity : AppCompatActivity() {
 
     }
 
-    override fun onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack()
-        } else {
-            super.onBackPressed()
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         try {
@@ -100,8 +92,13 @@ class BrowserActivity : AppCompatActivity() {
 
     }
 
-    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
-        if (mouseManager.isShowMouse) {
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (event.keyCode == KeyEvent.KEYCODE_BACK) {
+            if (webView.canGoBack()) {
+                webView.goBack()
+                return true
+            }
+        } else if (mouseManager.isShowMouse) {
             return mouseManager.onDpadClicked(event)
         }
         return super.dispatchKeyEvent(event)

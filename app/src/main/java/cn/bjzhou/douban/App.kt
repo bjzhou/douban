@@ -1,6 +1,7 @@
 package cn.bjzhou.douban
 
 import android.app.Application
+import com.tencent.bugly.crashreport.CrashReport
 
 /**
  * @User zhoubinjia
@@ -11,6 +12,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+
+        CrashReport.initCrashReport(applicationContext, "e371fd2157", false)
     }
 
     companion object {
