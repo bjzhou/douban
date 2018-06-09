@@ -1,7 +1,10 @@
 package cn.bjzhou.douban.detail
 
 import android.content.Intent
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
@@ -13,7 +16,10 @@ import android.support.v7.graphics.Palette
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Html
 import android.text.TextUtils
-import android.view.*
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import cn.bjzhou.douban.GlideApp
 import cn.bjzhou.douban.R
 import cn.bjzhou.douban.api.Api
@@ -174,7 +180,12 @@ class DetailActivity : AppCompatActivity() {
             }
         }
 
-        Api.yyetsService.yyetsSearch(title.split(" ")[0]).enqueue(object : KCallback<YYeTsItem>() {
+        val yyetsTitle = when {
+            title.contains("：") -> title.split("：")[0]
+            title.contains(" ") -> title.split(" ")[0]
+            else -> title
+        }
+        Api.yyetsService.yyetsSearch(yyetsTitle).enqueue(object : KCallback<YYeTsItem>() {
             override fun onResponse(res: YYeTsItem) {
                 val html = res.data.resource_html
                 if (html.isEmpty) return

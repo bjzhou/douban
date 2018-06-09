@@ -22,7 +22,8 @@
         <activity android:name=".search.SearchActivity" />
         <activity
             android:name=".detail.DetailActivity" />
-        <activity android:name=".detail.BrowserActivity">
+        <activity android:name=".detail.BrowserActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 

@@ -4,13 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import org.jetbrains.annotations.NotNull;
 
 import cn.bjzhou.douban.R;
 
@@ -19,39 +22,29 @@ import cn.bjzhou.douban.R;
  */
 public class TcMouseView extends FrameLayout {
 
-    private int mOffsetX;
-    private int mOffsetY;
-
     private ImageView mMouseView;
 
     private Bitmap mMouseBitmap;
 
     private TcMouseManager mMouseManager;
 
-    private int mMouseX = TcMouseManager.MOUSE_STARTX;
-
-    private int mMouseY = TcMouseManager.MOUSE_STARY;
-
-    private int mLastMouseX = mMouseX;
-
-    private int mLastMouseY = mMouseY;
+    private int mMouseX = 0;
+    private int mMouseY = 0;
 
     private int mMoveDis = TcMouseManager.MOUSE_MOVE_STEP;
-
 
     private OnMouseListener mOnMouseListener;
 
     public TcMouseView(Context context) {
-        super(context);
+        this(context, null);
     }
 
-    public TcMouseView(Context context, TcMouseManager mMouseMrg) {
-        super(context);
-        init(mMouseMrg);
+    public TcMouseView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    public OnMouseListener getOnMouseListener() {
-        return mOnMouseListener;
+    public TcMouseView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
     }
 
     public void setOnMouseListener(OnMouseListener mOnMouseListener) {
@@ -67,17 +60,13 @@ public class TcMouseView extends FrameLayout {
         }
     }
 
-    private void init(TcMouseManager manager) {
-        mMouseManager = manager;
+    public void init(WebView parent) {
+        mMouseManager = new TcMouseManager(parent, this);
         Drawable drawable = getResources().getDrawable(R.drawable.shubiao);
-        mMouseBitmap = drawableToBitamp(drawable);
+        mMouseBitmap = drawableToBitmap(drawable);
         mMouseView = new ImageView(getContext());
         mMouseView.setImageBitmap(mMouseBitmap);
         addView(mMouseView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        mOffsetX = (int) ((mMouseBitmap.getWidth()));
-        mOffsetY = (int) ((mMouseBitmap.getHeight()));
-        mOffsetX = (int) ((mMouseBitmap.getWidth()) * 30 / 84);
-        mOffsetY = (int) ((mMouseBitmap.getHeight()) * 20 / 97);
     }
 
     @Override
@@ -88,30 +77,12 @@ public class TcMouseView extends FrameLayout {
         }
     }
 
-
-    private void scrollView(KeyEvent event) {
-        if (mMouseManager.getCurrentActivityType() == TcMouseManager.MOUSE_TYPE) {
-
-            int pageScrollBy = 0;
-            if (event.getKeyCode() == TcMouseManager.KEYCODE_UP) {
-                pageScrollBy = -mMoveDis;
-            } else if (event.getKeyCode() == TcMouseManager.KEYCODE_DOWN) {
-                pageScrollBy = mMoveDis;
-            }
-            ViewGroup parent = (ViewGroup) getParent();
-            parent.scrollBy(0, pageScrollBy);
-//            parent.dispatchKeyEvent(event);
-
-        }
-    }
-
     public void onCenterButtonClicked(KeyEvent event) {
-        mMouseManager.sendCenterClickEvent(mMouseX + mOffsetX, mMouseY + mOffsetY, event.getAction());//加一点偏移补�?
+        mMouseManager.sendCenterClickEvent(mMouseX + TcMouseManager.MOUSE_MOVE_STEP, mMouseY + TcMouseManager.MOUSE_MOVE_STEP, event.getAction());
     }
 
 
-    private Bitmap drawableToBitamp(Drawable drawable) {
-
+    private Bitmap drawableToBitmap(Drawable drawable) {
         BitmapDrawable bd = (BitmapDrawable) drawable;
         Bitmap bitmap = bd.getBitmap();
         return Bitmap.createScaledBitmap(bitmap, 50, 50, true);
@@ -125,20 +96,14 @@ public class TcMouseView extends FrameLayout {
                         + event.getKeyCode());
         switch (event.getKeyCode()) {
             case TcMouseManager.KEYCODE_UP:
-
             case TcMouseManager.KEYCODE_DOWN:
-
             case TcMouseManager.KEYCODE_LEFT:
-
             case TcMouseManager.KEYCODE_RIGHT:
-
             case TcMouseManager.KEYCODE_CENTER:
             case TcMouseManager.KEYCODE_ENTER:
                 if (mOnMouseListener != null) {
-
                     return mOnMouseListener.onclick(TcMouseView.this, event);
                 }
-
             default:
                 break;
         }
@@ -151,37 +116,20 @@ public class TcMouseView extends FrameLayout {
         mMoveDis = times * TcMouseManager.MOUSE_MOVE_STEP;
         switch (event.getKeyCode()) {
             case TcMouseManager.KEYCODE_UP:
-                if (mMouseY - mMoveDis >= 0) {
-                    mMouseY = mMouseY - mMoveDis;
-                } else {
-                    mMouseY = 0;
-                    scrollView(event);
-                }
+                mMouseY = (mMouseY - mMoveDis > 0) ? mMouseY - mMoveDis : 0;
                 break;
             case TcMouseManager.KEYCODE_LEFT:
                 mMouseX = (mMouseX - mMoveDis > 0) ? mMouseX - mMoveDis : 0;
                 break;
             case TcMouseManager.KEYCODE_DOWN:
-                if (mMouseY + mMoveDis < getMeasuredHeight() - mMoveDis) {
-                    mMouseY = mMouseY + mMoveDis;
-                } else {
-                    mMouseY = getMeasuredHeight() - mOffsetY;
-                    scrollView(event);
-                }
+                mMouseY = (mMouseY + mMoveDis < getMeasuredHeight() - TcMouseManager.MOUSE_MOVE_STEP) ? mMouseY + mMoveDis : getMeasuredHeight() - TcMouseManager.MOUSE_MOVE_STEP;
                 break;
             case TcMouseManager.KEYCODE_RIGHT:
-                mMouseX = (mMouseX + mMoveDis < getMeasuredWidth() - mOffsetX) ? mMouseX + mMoveDis : getMeasuredWidth() - mOffsetX;
+                mMouseX = (mMouseX + mMoveDis < getMeasuredWidth() - TcMouseManager.MOUSE_MOVE_STEP) ? mMouseX + mMoveDis : getMeasuredWidth() - TcMouseManager.MOUSE_MOVE_STEP;
                 break;
         }
-        if (mLastMouseX == mMouseX && mLastMouseY == mMouseY) {
-            return;
-        }
-
-        mLastMouseX = mMouseX;
-        mLastMouseY = mMouseY;
-
         requestLayout();
-        mMouseManager.sendMouseHoverEvent(mMouseX + mOffsetX, mMouseY + mOffsetY);
+        mMouseManager.sendMouseHoverEvent(event, times);
 
     }
 
@@ -190,14 +138,15 @@ public class TcMouseView extends FrameLayout {
         return super.onInterceptTouchEvent(ev);
     }
 
+    public boolean onDpadClicked(@NotNull KeyEvent event) {
+        return mMouseManager.onDpadClicked(event);
+    }
+
     /**
      * @author liuyongkui
      */
     public interface OnMouseListener {
-
         boolean onclick(View v, KeyEvent event);
-
-
     }
 
 
