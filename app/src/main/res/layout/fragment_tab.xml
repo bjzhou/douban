@@ -5,20 +5,20 @@
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         app:contentInsetStart="0dp"
         android:background="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="44dp">
-        <android.support.design.widget.TabLayout
+        <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             app:tabMinWidth="56dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
         android:background="#f0f0f0"
         android:layout_width="match_parent"

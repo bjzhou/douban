@@ -1,11 +1,11 @@
 package cn.bjzhou.douban.search
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.MenuItem
 import android.view.View
 import cn.bjzhou.douban.R
@@ -60,7 +60,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         swipeLayout.post {
-            if (recyclerView.adapter.itemCount == 0) {
+            if (recyclerView.adapter?.itemCount == 0) {
                 swipeLayout.refresh()
                 crawl(true)
             }

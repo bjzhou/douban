@@ -2,7 +2,7 @@ package cn.bjzhou.douban.hot
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,7 +59,7 @@ class HotContentFragment : BaseFragment() {
         }
 
         recyclerView.setOnLoadMore {
-            loadContent(recyclerView.adapter.itemCount)
+            loadContent(recyclerView.adapter?.itemCount ?: 0)
         }
 
         AppConfig.configObservers.add {
@@ -107,7 +107,7 @@ class HotContentFragment : BaseFragment() {
 
     override fun onFragmentVisible() {
         swipeLayout.post {
-            if (recyclerView.adapter.itemCount == 0) {
+            if (recyclerView.adapter?.itemCount == 0) {
                 swipeLayout.isRefreshing = true
                 loadContent()
             }

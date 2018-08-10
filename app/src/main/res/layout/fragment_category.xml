@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <android.support.design.widget.TabLayout
+                <com.google.android.material.tabs.TabLayout
                     android:id="@+id/sortLayout"
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
@@ -27,7 +27,7 @@
                     app:tabMode="fixed"
                     app:tabTextAppearance="@style/SmallTabText" />
 
-                <android.support.design.widget.TabLayout
+                <com.google.android.material.tabs.TabLayout
                     android:id="@+id/formLayout"
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
@@ -35,7 +35,7 @@
                     app:tabMode="scrollable"
                     app:tabTextAppearance="@style/SmallTabText" />
 
-                <android.support.design.widget.TabLayout
+                <com.google.android.material.tabs.TabLayout
                     android:id="@+id/typeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
@@ -43,7 +43,7 @@
                     app:tabMode="scrollable"
                     app:tabTextAppearance="@style/SmallTabText" />
 
-                <android.support.design.widget.TabLayout
+                <com.google.android.material.tabs.TabLayout
                     android:id="@+id/areaLayout"
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
@@ -51,7 +51,7 @@
                     app:tabMode="scrollable"
                     app:tabTextAppearance="@style/SmallTabText" />
 
-                <android.support.design.widget.TabLayout
+                <com.google.android.material.tabs.TabLayout
                     android:id="@+id/featureLayout"
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
@@ -60,18 +60,18 @@
                     app:tabTextAppearance="@style/SmallTabText" />
             </LinearLayout>
         </LinearLayout>
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

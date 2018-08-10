@@ -1,10 +1,10 @@
 package cn.bjzhou.douban.extension
 
 import android.annotation.SuppressLint
-import android.support.design.widget.TabLayout
-import android.support.v7.view.menu.ActionMenuItemView
-import android.support.v7.widget.ActionMenuView
-import android.support.v7.widget.Toolbar
+import com.google.android.material.tabs.TabLayout
+import androidx.appcompat.view.menu.ActionMenuItemView
+import androidx.appcompat.widget.ActionMenuView
+import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.view.ViewGroup
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx

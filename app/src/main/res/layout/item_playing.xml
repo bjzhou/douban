@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/contentView"
@@ -7,7 +7,7 @@
     android:maxWidth="144dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="?attr/selectableItemBackground"
     android:focusable="true"
     android:layout_margin="8dp"
     android:padding="8dp">
@@ -16,7 +16,7 @@
         android:id="@+id/image"
         android:layout_width="115dp"
         android:layout_height="161dp"
-        android:src="@drawable/placeholder"
+        app:srcCompat="@drawable/placeholder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -45,4 +45,4 @@
         app:layout_constraintTop_toBottomOf="@+id/titleView"
         tools:text="CDEsss" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,11 +9,11 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.ColorUtils
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.graphics.Palette
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
+import androidx.appcompat.app.AppCompatActivity
+import androidx.palette.graphics.Palette
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Html
 import android.text.TextUtils
 import android.view.MenuItem
@@ -33,6 +33,7 @@ import cn.bjzhou.douban.spider.SpiderEngine
 import cn.bjzhou.douban.wrapper.KCallback
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.appbar.AppBarLayout
 import jp.wasabeef.blurry.Blurry
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.content_detail.*
@@ -56,16 +57,16 @@ class DetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail)
         if (Build.VERSION.SDK_INT >= 21) {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            appBarLayout.setOnApplyWindowInsetsListener({ _, insets ->
+            appBarLayout.setOnApplyWindowInsetsListener { _, insets ->
                 toolbar.setPadding(0, insets.systemWindowInsetTop, 0, 0)
                 toolbar.layoutParams.height = actionBarSize + insets.systemWindowInsetTop
                 (topContentLayout.layoutParams as ViewGroup.MarginLayoutParams).topMargin = 48.dp + insets.systemWindowInsetTop
                 appBarLayout.layoutParams.height = 256.dp + insets.systemWindowInsetTop
                 insets.consumeSystemWindowInsets()
-            })
+            }
             appBarLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
-        appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+        appBarLayout.addOnOffsetChangedListener(AppBarLayout.BaseOnOffsetChangedListener { appBarLayout: AppBarLayout, verticalOffset: Int ->
             if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
                 val bitmap = Bitmap.createBitmap(toolbar.width, toolbar.height, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(bitmap)
@@ -78,7 +79,7 @@ class DetailActivity : AppCompatActivity() {
             } else {
                 toolbar.background = null
             }
-        }
+        })
         title = intent?.getStringExtra("title") ?: ""
         spider = DetailSpider(intent?.getStringExtra("url") ?: "")
 
@@ -112,7 +113,7 @@ class DetailActivity : AppCompatActivity() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             super.onResourceReady(resource, transition)
                             Palette.from(resource).generate { p ->
-                                val color = p.getDarkMutedColor(ContextCompat.getColor(this@DetailActivity, R.color.colorAccent))
+                                val color = p?.getDarkMutedColor(ContextCompat.getColor(this@DetailActivity, R.color.colorAccent)) ?: 0
                                 Blurry.with(this@DetailActivity)
                                         .radius(25)
                                         .sampling(8)

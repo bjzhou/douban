@@ -1,11 +1,11 @@
 package cn.bjzhou.douban.extension
 
 import android.content.Context
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.util.Log
 import cn.bjzhou.douban.App
 import kotlinx.coroutines.experimental.Job
@@ -32,13 +32,15 @@ var RecyclerView.isLoadingMore: Boolean
 
 fun RecyclerView.setOnLoadMore(action: () -> Unit) {
     addOnScrollListener(object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-            val totalItemCount = layoutManager.itemCount
-            val lastVisibleItem = findLastVisibleItemPosition(layoutManager)
-            if (!loading
-                    && totalItemCount <= (lastVisibleItem + 5)) {
-                action.invoke()
-                loading = true
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            layoutManager?.let {
+                val totalItemCount = it.itemCount
+                val lastVisibleItem = findLastVisibleItemPosition(it)
+                if (!loading
+                        && totalItemCount <= (lastVisibleItem + 5)) {
+                    action.invoke()
+                    loading = true
+                }
             }
         }
     })

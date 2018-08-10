@@ -1,11 +1,11 @@
 package cn.bjzhou.douban.category
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.GridLayoutManager
+import com.google.android.material.tabs.TabLayout
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,10 +95,12 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         recyclerView.adapter = adapter
 
         recyclerView.setOnLoadMore {
-            if (recyclerView.adapter.itemCount % 21 == 0) {
-                loadContent(recyclerView.adapter.itemCount)
-            } else {
-                recyclerView.isLoadingMore = false
+            recyclerView.adapter?.let {
+                if (it.itemCount % 21 == 0) {
+                    loadContent(it.itemCount)
+                } else {
+                    recyclerView.isLoadingMore = false
+                }
             }
         }
         swipeLayout.setColorSchemeResources(R.color.colorAccent)
@@ -118,7 +120,7 @@ class CategoryFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     override fun onFragmentVisible() {
         recyclerView.post {
-            if (recyclerView.adapter.itemCount == 0) {
+            if (recyclerView.adapter?.itemCount == 0) {
                 swipeLayout.refresh()
                 loadContent()
             }

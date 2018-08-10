@@ -3,14 +3,13 @@ package cn.bjzhou.douban
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.SearchView
+import com.google.android.material.tabs.TabLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import android.view.View
 import cn.bjzhou.douban.category.CategoryFragment
-import cn.bjzhou.douban.extension.setTVSupport
 import cn.bjzhou.douban.search.SearchActivity
 import kotlinx.android.synthetic.main.activity_main.*
 

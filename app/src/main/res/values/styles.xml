@@ -18,8 +18,8 @@
 
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="titleTextColor">?android:attr/textColorPrimary</item>
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="android:elevation">8dp</item>
+        <item name="background">@color/colorPrimary</item>
+        <item name="elevation">8dp</item>
     </style>
 
     <style name="SmallTabText" parent="TextAppearance.Design.Tab">
